@@ -1,5 +1,5 @@
 <?php
-    include('../includes/db.php');
+    include('includes/db.php');
 
     if (!isset($_GET['class_id']) || empty($_GET['class_id'])) {
         die("Error: class_id is missing or invalid.");

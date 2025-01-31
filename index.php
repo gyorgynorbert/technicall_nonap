@@ -1,5 +1,5 @@
 <?php
-    include('../includes/db.php');
+    include('includes/db.php');
 
     $classes_query = "SELECT * FROM grades";
     $classes_result = mysqli_query($conn, $classes_query);

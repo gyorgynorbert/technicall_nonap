@@ -1,5 +1,5 @@
 <?php
-require '../includes/db.php';
+require 'includes/db.php';
 
 // Function to send email
 function sendOrderEmail($to, $subject, $message) {
