@@ -111,8 +111,6 @@
 </head>
 <body>
     <h2>Student: <?= htmlspecialchars($student['name']) ?></h2>
-    <img src="<?= htmlspecialchars($student['cover_photo']) ?>" alt="Cover Photo" style="max-width: 200px;">
-
     <h3>Available Photos:</h3>
     <div class="photos-container">
         <?php foreach ($all_photos as $photo): ?>
