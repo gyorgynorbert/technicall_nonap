@@ -23,7 +23,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Osztály: <?php echo $class['grade_name']; ?></title>
+    <link rel="stylesheet" href="/assets/grade.css">
+    <title><?php echo $class['grade_name']; ?> osztály</title>
 </head>
 <body>
     <h1>Tanulók</h1>
@@ -33,15 +34,12 @@
             while ($kid = mysqli_fetch_assoc($result_kids)) {
                 echo "<div class='kid-card'>";
                 echo "<a href='student.php?student_id=" . $kid['id'] . "'>";
-                if ($kid['cover_photo']) {
-                    echo "<img src='" . $kid['cover_photo'] . "' alt='Kid Photo'>";
-                }
                 echo "<h3>" . $kid['name'] . "</h3>";
                 echo "</a>";
                 echo "</div>";
             }
         } else {
-            echo "No students found in this class.";
+            echo "Nincs tanuló ebben az osztályban";
         }
         ?>
     </div>
