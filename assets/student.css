@@ -17,7 +17,7 @@ h2, h3, h4 {
 }
 
 img.student-photo {
-    max-width: 150px;
+    max-width: 400px;
     height: auto;
     border-radius: 8px;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
@@ -58,6 +58,3 @@ button:hover {
     background: #0056b3;
 }
 
-.product-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
-.photo-option { margin: 10px 0; }
-img.student-photo { max-width: 150px; margin: 5px; }
