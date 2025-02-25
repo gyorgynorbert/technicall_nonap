@@ -1,14 +1,21 @@
-<?php 
-    $servername = 'localhost';
-    $username = 'root';
-    $password = 'rootpassword';
-    $db_name = 'nonap_db';
-    $socket = '/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock';
-    $port = 3306;
+<?php
+    require $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
 
-    $conn = new mysqli($servername, $username, $password, $db_name, $port, $socket);
+    use Dotenv\Dotenv;
 
-    if ($conn -> connect_error) {
+    $dotenv = Dotenv::createImmutable($_SERVER['DOCUMENT_ROOT']);
+    $dotenv->load();
+
+    $servername = $_ENV['DB_HOST'];
+    $username = $_ENV['DB_USER'];
+    $password = $_ENV['DB_PASS'];
+    $db_name = $_ENV['DB_NAME'];
+    $port = $_ENV['DB_PORT'];
+    $socket = $_ENV['DB_SOCKET'];
+
+    $conn = new mysqli($servername, $username, $password, $db_name, $port, $socket ?: null);
+
+    if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
 ?>

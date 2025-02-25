@@ -1,1 +1,0 @@
-# TechnicAll nőnapi weboldal

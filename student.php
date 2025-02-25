@@ -1,5 +1,9 @@
 <?php
     require 'includes/db.php';
+    
+    header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+    header("Expires: Sat, 01 Jan 2000 00:00:00 GMT");
+    header("Pragma: no-cache");
 
     if (!isset($_GET['student_id']) || empty($_GET['student_id'])) {
         die("Hiba: diák nem létezik vagy invalid!");
@@ -133,20 +137,21 @@
                     alt="<?= htmlspecialchars($photo['label']) ?>" 
                     class="student-photo">
                 <p class="photo-num"><?php echo htmlspecialchars($photo['label']); ?></p>
+                <a href="scripts/download.php?file=<?php echo $photo['path']?>" class="download-btn">Letöltés</a>
             </div>
         <?php endforeach; ?>
     </div>
 
-    <form action="/scripts/process_order.php" method="POST" novalidate>
+    <form action="/scripts/process_order.php" method="POST" id="orderForm" novalidate>
         <input type="hidden" name="student_id" value="<?= $student_id ?>">
         <div class="product-section">
             <h3>Egyedülálló termékek</h3>
             <?php foreach ($individual_products as $product): ?>
-                <div class="product">
+                <div id="product-<?= $product['code'] ?>" class="product">
                     <h4><?= htmlspecialchars($product['name']) ?> (<?= $product['price'] ?> RON)</h4>
                     <div class="photo-option">
-                        <label>Válassz képet:<label>
-                        <select name="individual[<?= $product['code'] ?>][photo]" required>
+                        <label>Válassz képet:</label>
+                        <select name="individual[<?= $product['code'] ?>][photo][]">
                             <?php foreach ($all_photos as $photo): ?>
                                 <option value="<?= htmlspecialchars($photo['path']) ?>">
                                     <?= htmlspecialchars($photo['label']) ?>
@@ -154,8 +159,8 @@
                             <?php endforeach; ?>
                         </select>
                         <label>Mennyiség:</label>
-                        <input type="number" name="individual[<?= $product['code'] ?>][quantity]" 
-                               min="0" value="0" required>
+                        <input type="number" name="individual[<?= $product['code'] ?>][quantity][]" min="0" value="0" class="product-quantity"/>
+                        <button type="button" onclick="addPhotoOption('<?= $product['code'] ?>')">+</button>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -172,7 +177,7 @@
                     <?php foreach ($package['components'] as $component): ?>
                         <div class="photo-option">
                             <label><?= $component['name'] ?>:</label>
-                            <select name="packages[<?= $package['id'] ?>][<?= $component['code'] ?>][photo]" required>
+                            <select name="packages[<?= $package['id'] ?>][<?= $component['code'] ?>][photo]">
                                 <?php foreach ($all_photos as $photo): ?>
                                     <option value="<?= htmlspecialchars($photo['path']) ?>">
                                         <?= htmlspecialchars($photo['label']) ?>
@@ -183,13 +188,86 @@
                     <?php endforeach; ?>
                     <label>Mennyiség (1 csomag):</label>
                     <input type="number" name="packages[<?= $package['id'] ?>][quantity]" 
-                           min="0" value="0" required>
+                           min="0" value="0" class="package-quantity">
                 </div>
             <?php endforeach; ?>
         </div>
-
-        
+        <div class="product-section">
+            <h3>Elérhetőség</h3>
+            <label for="phone_number">Telefonszám:</label>
+            <input type="tel" name="phone_number" id="phone_number" 
+                placeholder="0712345678" 
+                pattern="^0\d{9}$" 
+                required>
+        </div>
         <button type="submit">Rendelés</button>
+        <script>
+            document.getElementById("orderForm").addEventListener("submit", function(event) {
+                const phoneInput = document.getElementById("phone_number");
+                const productInputs = document.querySelectorAll(".product-quantity");
+                const packageInputs = document.querySelectorAll(".package-quantity");
+                
+                let hasOrder = false;
+                
+                // Check if at least one individual product or package is selected (quantity > 0)
+                productInputs.forEach(input => {
+                    if (parseInt(input.value) > 0) {
+                        hasOrder = true;
+                    }
+                });
+                
+                packageInputs.forEach(input => {
+                    if (parseInt(input.value) > 0) {
+                        hasOrder = true;
+                    }
+                });
+
+                // Check if the phone number is valid
+                if (!phoneInput.value.match(/^0\d{9}$/)) {
+                    alert("Hiba: Kérlek adj meg egy érvényes telefonszámot (pl. 0712345678)!");
+                    event.preventDefault();
+                    return;
+                }
+
+                // Check if at least one product or package is selected
+                if (!hasOrder) {
+                    alert("Hiba: Kérlek válassz legalább egy terméket vagy csomagot!");
+                    event.preventDefault();
+                    return;
+                }
+            });
+
+            function addPhotoOption(productCode) {
+                const productSection = document.getElementById(`product-${productCode}`);
+
+                if (!productSection) {
+                    console.error(`Hiba: Nem található 'product-${productCode}' ID-jű elem!`);
+                    return;
+                }
+                
+                // Get existing input count to ensure unique names
+                const existingInputs = productSection.querySelectorAll('input[type="number"]');
+                const index = existingInputs.length;
+
+                const newPhotoOption = document.createElement("div");
+                newPhotoOption.classList.add("photo-option");
+                newPhotoOption.innerHTML = `
+                    <label>Válassz képet:</label>
+                    <select name="individual[${productCode}][photo][]">
+                        <?php foreach ($all_photos as $photo): ?>
+                            <option value="<?= htmlspecialchars($photo['path']) ?>">
+                                <?= htmlspecialchars($photo['label']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <label>Mennyiség:</label>
+                    <input type="number" name="individual[${productCode}][quantity][]" min="0" value="1" class="product-quantity"/>
+                    <button class="rmv-btn" type="button" onclick="this.parentElement.remove()">-</button>
+                `;
+
+                productSection.appendChild(newPhotoOption);
+            }
+        </script>
     </form>
 </body>
 </html>

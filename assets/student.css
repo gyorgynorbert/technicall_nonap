@@ -43,7 +43,8 @@ select, input[type="number"] {
     width: 100px;
 }
 
-button {
+button, .download-btn {
+    text-decoration: none;
     background: #007bff;
     color: #fff;
     border: none;
@@ -54,7 +55,26 @@ button {
     transition: background 0.3s;
 }
 
-button:hover {
+button:hover, .download-btn:hover {
     background: #0056b3;
 }
 
+.photo-card {
+    margin-bottom: 10px;
+}
+
+.rmv-btn {
+    text-decoration: none;
+    background: #ff4141;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.rmv-btn:hover {
+    background: #b00000;
+}
