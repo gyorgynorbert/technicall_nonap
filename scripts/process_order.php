@@ -24,7 +24,7 @@ function sendOrderEmail($to, $subject, $message) {
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
 
-        $mail->setFrom('elodkee91@gmail.com', 'Koncsag Elod');
+        $mail->setFrom('example@gmail.com', 'John Doe');
         $mail->addAddress($to);
         $mail->Subject = htmlspecialchars($subject);
 
@@ -139,7 +139,7 @@ if (!empty($package_orders)) {
     }
 }
 
-$to_email = "norbert200476@gmail.com";
+$to_email = "example@gmail.com";
 $email_result = sendOrderEmail($to_email, $email_subject, $email_message);
 
 if ($email_result === true) {
